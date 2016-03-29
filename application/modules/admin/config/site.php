@@ -23,7 +23,7 @@ $config['site'] = array(
 
 	// Default meta data (name => content)
 	'meta'	=> array(
-		'author'		=> 'Afes Oktavianus  (https://github.com/sanayaCorp)',
+		'author'		=> 'Michael Chan (https://github.com/waifung0207)',
 		'description'	=> 'CI Bootstrap 3 Admin Panel'
 	),
 
@@ -46,7 +46,7 @@ $config['site'] = array(
 	),
 
 	// Multilingual settings (set empty array to disable this)
-	'multilingual' => array('indonesian','english'),
+	'multilingual' => array(),
 
 	// AdminLTE settings
 	'adminlte' => array(
@@ -72,6 +72,15 @@ $config['site'] = array(
 				'List'			=> 'user',
 				'Create'		=> 'user/create',
 				'User Groups'	=> 'user/group',
+			)
+		),
+		'barang' => array(
+			'name'		=> 'Product',
+			'url'		=> '',
+			'icon'		=> 'ion ion-load-b',	// use Ionicons (instead of FontAwesome)
+			'children'  => array(
+				'List'			=> 'siup_product',
+				'Create'		=> 'siup_product/create',				
 			)
 		),
 		'demo' => array(

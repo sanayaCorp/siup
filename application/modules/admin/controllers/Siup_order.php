@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Siup_order extends CI_Controller
+class Siup_order extends Admin_Controller
 {
     function __construct()
     {

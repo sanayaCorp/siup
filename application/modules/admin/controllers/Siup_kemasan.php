@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Siup_kemasan extends CI_Controller
+class Siup_kemasan extends Admin_Controller
 {
     function __construct()
     {

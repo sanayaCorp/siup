@@ -37,7 +37,7 @@
 		<?php endif; ?>
 
 	<?php endforeach; ?>
-	
+		
 	<?php if ( !empty($useful_links) ): ?>
 		<li class="header">USEFUL LINKS</li>
 		<?php foreach ($useful_links as $link): ?>
