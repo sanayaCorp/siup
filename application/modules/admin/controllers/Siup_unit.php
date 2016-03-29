@@ -1,0 +1,158 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class Siup_unit extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('Siup_unit_model');
+        $this->load->library('form_validation');
+    }
+
+    public function index()
+    {
+        $q = urldecode($this->input->get('q', TRUE));
+        $start = intval($this->input->get('start'));
+        
+        if ($q <> '') {
+            $config['base_url'] = base_url() . 'siup_unit/index.html?q=' . urlencode($q);
+            $config['first_url'] = base_url() . 'siup_unit/index.html?q=' . urlencode($q);
+        } else {
+            $config['base_url'] = base_url() . 'siup_unit/index.html';
+            $config['first_url'] = base_url() . 'siup_unit/index.html';
+        }
+
+        $config['per_page'] = 10;
+        $config['page_query_string'] = TRUE;
+        $config['total_rows'] = $this->Siup_unit_model->total_rows($q);
+        $siup_unit = $this->Siup_unit_model->get_limit_data($config['per_page'], $start, $q);
+
+        $this->load->library('pagination');
+        $this->pagination->initialize($config);
+
+        $data = array(
+            'siup_unit_data' => $siup_unit,
+            'q' => $q,
+            'pagination' => $this->pagination->create_links(),
+            'total_rows' => $config['total_rows'],
+            'start' => $start,
+        );
+        $this->load->view('siup_unit_list', $data);
+    }
+
+    public function read($id) 
+    {
+        $row = $this->Siup_unit_model->get_by_id($id);
+        if ($row) {
+            $data = array(
+		'id_unit' => $row->id_unit,
+		'desc' => $row->desc,
+		'location' => $row->location,
+	    );
+            $this->load->view('siup_unit_read', $data);
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('siup_unit'));
+        }
+    }
+
+    public function create() 
+    {
+        $data = array(
+            'button' => 'Create',
+            'action' => site_url('siup_unit/create_action'),
+	    'id_unit' => set_value('id_unit'),
+	    'desc' => set_value('desc'),
+	    'location' => set_value('location'),
+	);
+        $this->load->view('siup_unit_form', $data);
+    }
+    
+    public function create_action() 
+    {
+        $this->_rules();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->create();
+        } else {
+            $data = array(
+		'desc' => $this->input->post('desc',TRUE),
+		'location' => $this->input->post('location',TRUE),
+	    );
+
+            $this->Siup_unit_model->insert($data);
+            $this->session->set_flashdata('message', 'Create Record Success');
+            redirect(site_url('siup_unit'));
+        }
+    }
+    
+    public function update($id) 
+    {
+        $row = $this->Siup_unit_model->get_by_id($id);
+
+        if ($row) {
+            $data = array(
+                'button' => 'Update',
+                'action' => site_url('siup_unit/update_action'),
+		'id_unit' => set_value('id_unit', $row->id_unit),
+		'desc' => set_value('desc', $row->desc),
+		'location' => set_value('location', $row->location),
+	    );
+            $this->load->view('siup_unit_form', $data);
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('siup_unit'));
+        }
+    }
+    
+    public function update_action() 
+    {
+        $this->_rules();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->update($this->input->post('id_unit', TRUE));
+        } else {
+            $data = array(
+		'desc' => $this->input->post('desc',TRUE),
+		'location' => $this->input->post('location',TRUE),
+	    );
+
+            $this->Siup_unit_model->update($this->input->post('id_unit', TRUE), $data);
+            $this->session->set_flashdata('message', 'Update Record Success');
+            redirect(site_url('siup_unit'));
+        }
+    }
+    
+    public function delete($id) 
+    {
+        $row = $this->Siup_unit_model->get_by_id($id);
+
+        if ($row) {
+            $this->Siup_unit_model->delete($id);
+            $this->session->set_flashdata('message', 'Delete Record Success');
+            redirect(site_url('siup_unit'));
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('siup_unit'));
+        }
+    }
+
+    public function _rules() 
+    {
+	$this->form_validation->set_rules('desc', 'desc', 'trim|required');
+	$this->form_validation->set_rules('location', 'location', 'trim|required');
+
+	$this->form_validation->set_rules('id_unit', 'id_unit', 'trim');
+	$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+    }
+
+}
+
+/* End of file Siup_unit.php */
+/* Location: ./application/controllers/Siup_unit.php */
+/* Please DO NOT modify this information : */
+/* Generated by Harviacode Codeigniter CRUD Generator 2016-03-28 17:17:20 */
+/* http://harviacode.com */
