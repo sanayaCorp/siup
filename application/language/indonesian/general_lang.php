@@ -4,9 +4,9 @@
 	$lang['website_copyright'] = "&copy; 2015 All rights reserved.";
 
 	// Menu
-	$lang['home'] = "Beranda";
-	$lang['about_us'] = "Tentang Kami";
-	$lang['contact_us'] = "Hubungi Kami";
+	$lang['Beranda'] = "Beranda";
+	$lang['tentang_kami'] = "Tentang Kami";
+	$lang['hubungi_kami'] = "Hubungi Kami";
 	$lang['example'] = "Contoh";
 
 	// General terms

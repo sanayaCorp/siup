@@ -15,7 +15,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $config['site'] = array(
 
 	// Site name
-	'name' => 'Admin Panel',
+	'name' => 'Admin SIUP Panel',
 
 	// Default page title
 	// (set empty then MY_Controller will automatically generate one based on controller / action)
@@ -74,15 +74,41 @@ $config['site'] = array(
 				'User Groups'	=> 'user/group',
 			)
 		),
+		'kemasan'   => array(
+			'name'		=> 'Kemasan',
+			'url'		=> '',
+			'icon'		=> 'fa fa-file',
+			'children'	=> array(
+				'List'			=> 'siup_kemasan/',
+			)			
+		),
 		'barang' => array(
 			'name'		=> 'Product',
 			'url'		=> '',
 			'icon'		=> 'ion ion-load-b',	// use Ionicons (instead of FontAwesome)
 			'children'  => array(
 				'List'			=> 'siup_product',
-				'Create'		=> 'siup_product/create',				
+				//'Create'		=> 'siup_product/create',				
 			)
 		),
+		'unit'   => array(
+			'name'		=> 'Departement',
+			'url'		=> '',
+			'icon'		=> 'ion ion-load-b',
+			'children'	=> array(
+				'List'			=> 'siup_unit/',
+			)			
+		),
+		'order'   => array(
+			'name'		=> 'Order',
+			'url'		=> '',
+			'icon'		=> 'fa fa-archive',
+			'children'	=> array(
+				'List'			=> 'siup_order/',
+				//'Create'		=> 'siup_order/create',
+			)			
+		),
+		/*
 		'demo' => array(
 			'name'		=> 'Demo',
 			'url'		=> 'demo',
@@ -99,7 +125,7 @@ $config['site'] = array(
 				'Item 2'			=> 'demo/item/2',
 				'Item 3'			=> 'demo/item/3',
 			)
-		),
+		),*/
 		'panel' => array(
 			'name'		=> 'Admin Panel',
 			'url'		=> 'panel',
@@ -123,32 +149,34 @@ $config['site'] = array(
 	// restricted pages to specific groups of users, which will affect sidemenu item as well
 	// pages out of this array will have no restriction (except required admin user login)
 	'page_auth' => array(
-		'user/create'				=> array('webmaster', 'admin', 'manager'),
-		'user/group'				=> array('webmaster', 'admin', 'manager'),
-		'panel'						=> array('webmaster'),
-		'panel/admin_user'			=> array('webmaster'),
-		'panel/admin_user_create'	=> array('webmaster'),
+		'user'						=> array('webmaster'),
+		'user/list'					=> array('webmaster'),
+		'user/create'				=> array('webmaster'),
+		'user/group'				=> array('webmaster'),
+		'panel'						=> array('webmaster', 'admin'),
+		'panel/admin_user'			=> array('webmaster', 'admin'),
+		'panel/admin_user_create'	=> array('webmaster', 'admin'),
 		'panel/admin_user_group'	=> array('webmaster'),
 	),
 
 	// Useful links to display at bottom of sidemenu (e.g. to pages outside Admin Panel)
 	'useful_links' => array(
 		array(
-			'auth'		=> array('webmaster', 'admin', 'manager', 'staff'),
+			'auth'		=> array('webmaster'),
 			'name'		=> 'Frontend Website',
 			'url'		=> '',
 			'target'	=> '_blank',
 			'color'		=> 'text-aqua'
 		),
 		array(
-			'auth'		=> array('webmaster', 'admin'),
+			'auth'		=> array('webmaster'),
 			'name'		=> 'API Site',
 			'url'		=> 'api',
 			'target'	=> '_blank',
 			'color'		=> 'text-orange'
 		),
 		array(
-			'auth'		=> array('webmaster', 'admin', 'manager', 'staff'),
+			'auth'		=> array('webmaster'),
 			'name'		=> 'Github Repo',
 			'url'		=> CI_BOOTSTRAP_REPO,
 			'target'	=> '_blank',

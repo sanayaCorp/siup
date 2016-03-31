@@ -9,38 +9,34 @@ class Siup_product extends Admin_Controller
     {
         parent::__construct();
         $this->load->model('Siup_product_model');
-        $this->load->library('form_validation');
+        $this->load->library(array('form_validation','form_builder'));
     }
 
     public function index()
     {
-        $q = urldecode($this->input->get('q', TRUE));
-        $start = intval($this->input->get('start'));
-        
-        if ($q <> '') {
-            $config['base_url'] = base_url() . 'siup_product/index.html?q=' . urlencode($q);
-            $config['first_url'] = base_url() . 'siup_product/index.html?q=' . urlencode($q);
-        } else {
-            $config['base_url'] = base_url() . 'siup_product/index.html';
-            $config['first_url'] = base_url() . 'siup_product/index.html';
+        $crud = $this->generate_crud('siup_product');
+        $crud->columns('id_product', 'desc', 'id_kemasan');
+        $this->unset_crud_fields('added_by', 'changed_by','last_modified');
+
+        // only webmaster and admin can change member groups
+        if ($crud->getState()=='list' || $this->ion_auth->in_group(array('webmaster', 'admin')))
+        {
+            //    $crud->set_relation_n_n('id_kemasan', 'siup_kemasan', 'siup_kemasan', 'id_kemasan', 'desc');
         }
 
-        $config['per_page'] = 10;
-        $config['page_query_string'] = TRUE;
-        $config['total_rows'] = $this->Siup_product_model->total_rows($q);
-        $siup_product = $this->Siup_product_model->get_limit_data($config['per_page'], $start, $q);
+        // only webmaster and admin can reset user password
+        if ($this->ion_auth->in_group(array('webmaster', 'admin')))
+        {
+                $crud->add_action('Add Kemasan', '', 'admin/siup_kemasan/', 'fa fa-repeat');
+        }
+		
+		$crud->set_relation('id_kemasan','siup_kemasan','desc');
+        // disable direct create / delete Frontend User
+        //$crud->unset_add();
+        //$crud->unset_delete();
 
-        $this->load->library('pagination');
-        $this->pagination->initialize($config);
-
-        $data = array(
-            'siup_product_data' => $siup_product,
-            'q' => $q,
-            'pagination' => $this->pagination->create_links(),
-            'total_rows' => $config['total_rows'],
-            'start' => $start,
-        );
-        $this->load->view('siup_product_list', $data);
+        $this->mTitle = 'Data Product';
+        $this->render_crud();
     }
 
     public function read($id) 
@@ -64,7 +60,64 @@ class Siup_product extends Admin_Controller
 
     public function create() 
     {
-        $data = array(
+    	$form = $this->form_builder->create_form();
+    	
+    	if($form->validate()) {
+			// passed validation
+			$id_product = $this->input->post('id_product');
+			$desc = $this->input->post('desc');
+			$id_kemasan = $this->input->post('kemasan');
+			
+			// [IMPORTANT] override database tables to update Frontend Users instead of Admin Users
+			/*$this->ion_auth_model->tables = array(
+				'users'				=> 'users',
+				'groups'			=> 'groups',
+				'users_groups'		=> 'users_groups',
+				'login_attempts'	=> 'login_attempts',
+			);
+
+			// proceed to create user
+			$user_id = $this->ion_auth->register($identity, $password, $email, $additional_data, $groups);			
+			if ($user_id)
+			{
+				// success
+				$messages = $this->ion_auth->messages();
+				$this->system_message->set_success($messages);
+
+				// directly activate user
+				$this->ion_auth->activate($user_id);
+			}
+			else
+			{
+				// failed
+				$errors = $this->ion_auth->errors();
+				$this->system_message->set_error($errors);
+			}*/
+			
+			$data = array(           
+	    		'id_product' => set_value('id_product'),
+	    		'desc' => set_value('desc'),
+	    		'id_kemasan' => set_value('id_kemasan'),
+	    		'changed_by' => set_value('changed_by'),
+	    		'added_by' => set_value('added_by'),
+	    		'last_modified' => set_value('last_modified'),
+	    	);
+	    	
+			$product = $this->Siup_product_model->insert($data);
+            $this->session->set_flashdata('message', 'Create Record Success');
+			refresh();
+		}
+
+		// get list of Frontend kemasan
+		$this->load->model('Siup_kemasan_model', 'kemasan');
+		$this->mViewData['kemasan'] = $this->kemasan->get_all();
+		
+		$this->mTitle = 'Create Product';
+
+		$this->mViewData['form'] = $form;
+		$this->render('product/create');
+					
+        /*$data = array(
             'button' => 'Create',
             'action' => site_url('siup_product/create_action'),
 	    'id_product' => set_value('id_product'),
@@ -74,7 +127,7 @@ class Siup_product extends Admin_Controller
 	    'added_by' => set_value('added_by'),
 	    'last_modified' => set_value('last_modified'),
 	);
-        $this->load->view('siup_product_form', $data);
+        $this->load->view('siup_product_form', $data);*/
     }
     
     public function create_action() 

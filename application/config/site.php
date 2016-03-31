@@ -15,7 +15,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $config['site'] = array(
 
 	// Site name
-	'name' => 'CI Bootstrap 3',
+	'name' => 'SIUP (Sistem Informasi Utility Purchasing)',
 
 	// Default page title
 	// (set empty then MY_Controller will automatically generate one based on controller / action)
@@ -23,8 +23,8 @@ $config['site'] = array(
 
 	// Default meta data (name => content)
 	'meta'	=> array(
-		'author'		=> 'Michael Chan (https://github.com/waifung0207)',
-		'description'	=> 'CI Bootstrap 3'
+		'author'		=> 'Afes Oktavianus (https://github.com/sanayaCorp)',
+		'description'	=> 'SIUP (Sistem Informasi Utility Purchasing)'
 	),
 
 	// Default scripts to embed at page head / end
@@ -51,16 +51,12 @@ $config['site'] = array(
 				'label'	=> 'English',		// label to be displayed on language switcher
 				'value'	=> 'english',		// to match with CodeIgniter folders inside application/language/
 			),
-			'zh' => array(
-				'label'	=> '繁體中文',
-				'value'	=> 'traditional-chinese',
-			),
-			'cn' => array(
-				'label'	=> '简体中文',
-				'value'	=> 'simplified-chinese',
+			'in' => array(
+				'label'	=> 'Indonesia',
+				'value'	=> 'indonesian',
 			),
 		),
-		'autoload'		=> array('general'),	// language files to autoload
+		'autoload'		=> array('general_lang'),	// language files to autoload
 	),
 
 	// Google Analytics User ID (UA-XXXXXXXX-X)
@@ -74,7 +70,7 @@ $config['site'] = array(
 			'url'		=> '',
 		),
 		// Demo to add sections with subpages
-		'demo' => array(
+		/*'demo' => array(
 			'name'		=> 'Demo',
 			'url'		=> 'demo',
 			'children'  => array(
@@ -88,7 +84,7 @@ $config['site'] = array(
 				'Item 3'				=> 'demo/item/3',
 				'Custom 404'			=> 'demo/non_existed',
 			)
-		),
+		),*/
 		// end of demo
 		'sign_up' => array(
 			'name'		=> 'Sign Up',

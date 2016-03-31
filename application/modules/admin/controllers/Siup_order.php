@@ -14,33 +14,48 @@ class Siup_order extends Admin_Controller
 
     public function index()
     {
-        $q = urldecode($this->input->get('q', TRUE));
-        $start = intval($this->input->get('start'));
-        
-        if ($q <> '') {
-            $config['base_url'] = base_url() . 'siup_order/index.html?q=' . urlencode($q);
-            $config['first_url'] = base_url() . 'siup_order/index.html?q=' . urlencode($q);
-        } else {
-            $config['base_url'] = base_url() . 'siup_order/index.html';
-            $config['first_url'] = base_url() . 'siup_order/index.html';
+        $crud = $this->generate_crud('siup_order');        
+//        $this->unset_crud_fields('added_by', 'changed_by','last_modified');
+
+        // only webmaster and admin can change member groups
+        if ($this->ion_auth->in_group('staff'))
+        {        
+        	$crud->columns('id_order', 'date', 'id_unit', 'id_product');
+        	$crud->add_fields('id_order', 'date', 'id_unit', 'id_product');
+        	$crud->edit_fields('id_order', 'date', 'id_unit', 'id_product');
+        	
+        } else if ($this->ion_auth->in_group('purchasing'))
+        {        
+        	$crud->columns('id_order', 'date', 'id_unit', 'id_product','stver', 'stacc', 'stord', 'tgl_ver', 'tgl_acc', 'tgl_pch');
+        	$crud->unset_add();
+        	$crud->edit_fields('id_order', 'date', 'id_unit', 'id_product','stord','tgl_terima');
+        } else if ($this->ion_auth->in_group('Accounting'))
+        {
+        	$crud->columns('id_order', 'date', 'id_unit', 'id_product','stver', 'stacc', 'tgl_ver', 'tgl_acc');
+        	$crud->unset_add();
+			$crud->edit_fields('id_order', 'date', 'id_unit', 'id_product','stacc','tgl_acc');
+		} else if ($this->ion_auth->in_group('verifikator'))
+		{
+			$crud->columns('id_order', 'date', 'id_unit', 'id_product','stver', 'tgl_ver');
+			$crud->unset_add();
+			$crud->edit_fields('id_order', 'date', 'id_unit', 'id_product','stver','tgl_ver');
+		}
+
+        // only webmaster and admin can reset user password
+        if ($this->ion_auth->in_group(array('webmaster', 'admin')))
+        {
+//                $crud->add_action('Add Kemasan', '', 'admin/siup_kemasan/add', 'fa fa-repeat');
         }
-
-        $config['per_page'] = 10;
-        $config['page_query_string'] = TRUE;
-        $config['total_rows'] = $this->Siup_order_model->total_rows($q);
-        $siup_order = $this->Siup_order_model->get_limit_data($config['per_page'], $start, $q);
-
-        $this->load->library('pagination');
-        $this->pagination->initialize($config);
-
-        $data = array(
-            'siup_order_data' => $siup_order,
-            'q' => $q,
-            'pagination' => $this->pagination->create_links(),
-            'total_rows' => $config['total_rows'],
-            'start' => $start,
-        );
-        $this->load->view('siup_order_list', $data);
+       // $crud->add_fields('id_order', 'date', 'id_unit', 'id_product');
+		$crud->unset_add_fields(array('stver','stacc','stpch','stord'));
+        // disable direct create / delete Frontend User
+        //$crud->unset_add();
+        //$crud->unset_delete();
+		$crud->set_relation('id_product','siup_product','desc');
+		$crud->set_relation('id_unit','siup_unit','desc');
+		
+        $this->mTitle = 'Data Order';
+        $this->render_crud();
     }
 
     public function read($id) 

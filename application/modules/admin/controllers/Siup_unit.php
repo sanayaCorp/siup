@@ -14,33 +14,28 @@ class Siup_unit extends Admin_Controller
 
     public function index()
     {
-        $q = urldecode($this->input->get('q', TRUE));
-        $start = intval($this->input->get('start'));
-        
-        if ($q <> '') {
-            $config['base_url'] = base_url() . 'siup_unit/index.html?q=' . urlencode($q);
-            $config['first_url'] = base_url() . 'siup_unit/index.html?q=' . urlencode($q);
-        } else {
-            $config['base_url'] = base_url() . 'siup_unit/index.html';
-            $config['first_url'] = base_url() . 'siup_unit/index.html';
+        $crud = $this->generate_crud('siup_unit');
+        $crud->columns('id_unit', 'desc','location');
+        //$this->unset_crud_fields('added_by', 'changed_by','last_modified');
+
+        // only webmaster and admin can change member groups
+        if ($crud->getState()=='list' || $this->ion_auth->in_group(array('webmaster', 'admin')))
+        {
+            //    $crud->set_relation_n_n('id_kemasan', 'siup_kemasan', 'siup_kemasan', 'id_kemasan', 'desc');
         }
 
-        $config['per_page'] = 10;
-        $config['page_query_string'] = TRUE;
-        $config['total_rows'] = $this->Siup_unit_model->total_rows($q);
-        $siup_unit = $this->Siup_unit_model->get_limit_data($config['per_page'], $start, $q);
+        // only webmaster and admin can reset user password
+        //if ($this->ion_auth->in_group(array('webmaster', 'admin')))
+        //{
+        //        $crud->add_action('Add Kemasan', '', 'admin/siup_kemasan/add', 'fa fa-repeat');
+        //}
 
-        $this->load->library('pagination');
-        $this->pagination->initialize($config);
+        // disable direct create / delete Frontend User
+        //$crud->unset_add();
+        //$crud->unset_delete();
 
-        $data = array(
-            'siup_unit_data' => $siup_unit,
-            'q' => $q,
-            'pagination' => $this->pagination->create_links(),
-            'total_rows' => $config['total_rows'],
-            'start' => $start,
-        );
-        $this->load->view('siup_unit_list', $data);
+        $this->mTitle = 'Data Divisi';
+        $this->render_crud();
     }
 
     public function read($id) 
